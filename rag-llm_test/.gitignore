@@ -1,0 +1,9 @@
+# db_files
+chroma_db/
+lang_db/
+
+# another_file
+rag-llm_v2/
+
+# .py
+tets_langchain.py
