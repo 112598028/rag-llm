@@ -2,6 +2,5 @@
 chroma_db/
 lang_db/
 
-# another_file
-RAG-LLM/
-
+# __pycache__
+__pycache__/
