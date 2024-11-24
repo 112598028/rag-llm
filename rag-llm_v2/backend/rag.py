@@ -20,6 +20,7 @@ Question: {question}
 Answer:
 """
 
+
 class Retriever:
     def __init__(self, vectorstore, k=3):
         self.vectorstore = vectorstore
@@ -40,7 +41,7 @@ class Retriever:
 class Generator:
     def __init__(self, model_name=model_name):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        
+
         model = AutoModelForCausalLM.from_pretrained(
             pretrained_model_name_or_path=model_name,
             device_map="auto",
@@ -58,18 +59,19 @@ class Generator:
             top_p=0.9,
             top_k=40,
             repetition_penalty=1.1,
-            do_sample=True
+            do_sample=True,
         )
         self.llm = HuggingFacePipeline(pipeline=self.generation_pipeline)
         self.output_parser = StrOutputParser()
-        
 
     def generate_response(self, question, retrieve_data):
         prompt_template = PromptTemplate(
             input_variables=["question", "retrieve_data"],
             template=template,
         )
-        prompt_text = prompt_template.format(question=question, retrieve_data=retrieve_data)
+        prompt_text = prompt_template.format(
+            question=question, retrieve_data=retrieve_data
+        )
         response = self.llm.invoke(prompt_text)
 
         return self.output_parser.parse(response)

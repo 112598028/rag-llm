@@ -18,7 +18,7 @@ class ChromaDBHandler:
             persist_directory=self.persist_directory,
             embedding_function=self.embedding_function,
         )
-    
+
     def check_documents_existed(self, source_id):
         metadata = self.chroma_db.get(include=["metadatas"])
         existing_ids = set()
@@ -28,7 +28,7 @@ class ChromaDBHandler:
                 existing_ids.add(data["source_id"])
 
         return source_id in existing_ids
-    
+
     def update_documents(self, docs):
         source_id = docs[0].metadata.get("source_id")
 

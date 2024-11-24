@@ -9,8 +9,8 @@ from langchain_community.vectorstores import Chroma
 from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-from langchain_huggingface import HuggingFacePipeline  
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline 
+from langchain_huggingface import HuggingFacePipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -18,13 +18,13 @@ from langchain_core.output_parsers import StrOutputParser
 import torch
 import os
 
+
 def get_file_hash(file_path):
     hash_md5 = hashlib.md5()
     with open(file_path, "rb") as f:
         for doc in iter(lambda: f.read(4096), b""):
             hash_md5.update(doc)
     return hash_md5.hexdigest()
-
 
 
 def excel_to_documents(file_path):
@@ -35,7 +35,7 @@ def excel_to_documents(file_path):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=300)
 
     docs = text_splitter.split_documents(filtered_documents)
-    
+
     return docs
 
 
@@ -64,18 +64,18 @@ def rag_response(vectorstore, question):
         input_variables=["question", "retrieve_data"],
         template="Using this data: {retrieve_data}. Respond to this prompt in Chinese: {question}",
     )
-     
-    model_id = "MediaTek-Research/Breeze-7B-Instruct-v1_0"  
-    tokenizer = AutoTokenizer.from_pretrained(model_id)  
-    model = AutoModelForCausalLM.from_pretrained(model_id)  
-    
-    pipe = pipeline(  
-        "text-generation", 
-        model=model, 
-        tokenizer=tokenizer, 
-        max_new_tokens=10, 
-        # device=0  
-    )  
+
+    model_id = "MediaTek-Research/Breeze-7B-Instruct-v1_0"
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    model = AutoModelForCausalLM.from_pretrained(model_id)
+
+    pipe = pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        max_new_tokens=10,
+        # device=0
+    )
     hf = HuggingFacePipeline(pipeline=pipe)
 
     # llm = ChatOpenAI(

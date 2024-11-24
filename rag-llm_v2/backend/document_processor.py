@@ -12,6 +12,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 # excel
 from langchain_community.document_loaders.excel import UnstructuredExcelLoader
 
+# word
+from langchain_community.document_loaders.word_documents import UnstructuredWordDocumentLoader
+
 
 class DocumentProcessor:
 
@@ -26,18 +29,28 @@ class DocumentProcessor:
                 hash_md5.update(doc)
         return hash_md5.hexdigest()
 
-    def excel_documents_processor(self):
-        loader = UnstructuredExcelLoader(self.file_path, mode="elements")
+    def _select_loader(self):
+        if self.file_path.endswith(".xlsx") or self.file_path.endswith(".xls"):
+            return UnstructuredExcelLoader(self.file_path, mode="elements")
+        elif self.file_path.endswith(".docx"):
+            return UnstructuredWordDocumentLoader(self.file_path, mode="elements")
+        else:
+            raise ValueError(
+                "Unsupported file type. Please use .xlsx, .xls or .docx files."
+            )
+
+    def _clean_text(self, text):
+        cleaned_text = re.sub(r"(\n+|\s+)", " ", text)
+        return cleaned_text.strip()
+
+    def documents_processor(self):
+        loader = self._select_loader()
         documents = loader.load()
-
+        for docs in documents:
+            docs.page_content = self._clean_text(docs.page_content)
         filtered_documents = filter_complex_metadata(documents)
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=250, chunk_overlap=20
-        )
-
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=32)
         docs = text_splitter.split_documents(filtered_documents)
-
         for doc in docs:
             doc.metadata["source_id"] = self.source_id
-
         return docs
