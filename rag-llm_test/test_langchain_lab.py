@@ -101,4 +101,12 @@ if __name__ == "__main__":
     response = rag_response(vector_store, question)
     print(response)
 
+    """
+    old v2 version
+    # Query the database using RAG
+    query = "喪失國籍怎麼處理?"
+    response = rag.get_response(query)
+    print(response)
+    """
+
     torch.cuda.empty_cache()

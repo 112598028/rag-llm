@@ -4,6 +4,7 @@ documents = processor.process_documents()
 """
 
 import hashlib
+import re
 
 # basic tool
 from langchain_community.vectorstores.utils import filter_complex_metadata
@@ -13,7 +14,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders.excel import UnstructuredExcelLoader
 
 # word
-from langchain_community.document_loaders.word_documents import UnstructuredWordDocumentLoader
+from langchain_community.document_loaders.word_document import (
+    UnstructuredWordDocumentLoader,
+)
 
 
 class DocumentProcessor:
